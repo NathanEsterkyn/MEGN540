@@ -405,7 +405,7 @@ void Task_Message_Handling( float _time_since_last )
 
                  if( Battery_Check( 0.0 ) ) { // if the battery is of an acceptable voltage
                      Task_Activate( &task_send_command, Left_Controller.update_period * 1000 ); // runs the motors
-                     Task_Activate( &task_cancel_command, data.Time ); // cancel the task after the specified time
+                     Task_Activate( &task_cancel_command, data.Time * 1000 ); // cancel the task after the specified time
                  }
                  Task_Activate( &task_clear_command, -1); // clears all the control data and stops the motors
                  command_processed = true; // reset the watchdog timer and activates task_message_handling_watchdog
