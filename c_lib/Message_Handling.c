@@ -321,8 +321,8 @@ void Task_Message_Handling( float _time_since_last )
                  USB_Msg_Read_Into( &data, sizeof( data ) );  // fills the struct with the received floats
 
                  if( Battery_Check( 0.0 ) ) { // if the battery is good
-                     float dist_Left = data.Lin - data.Ang*(Car_Width*0.5); // calculate distance for left to travel
-                     float dist_Right = data.Lin + data.Ang*(Car_Width*0.5); // calculate distance for right to travel
+                     float dist_Left = data.Lin - data.Ang * ( Car_Width * 0.5 ); // calculate distance for left to travel
+                     float dist_Right = data.Lin + data.Ang * ( Car_Width * 0.5 ); // calculate distance for right to travel
                      Controller_Set_Target_Position( &Left_Controller, dist_Left ); // set targets based on calculation
                      Controller_Set_Target_Position( &Right_Controller, dist_Right );
                      Task_Activate( &task_send_command, Left_Controller.update_period * 1000 ); // update the controller and run the motors every 10 ms
@@ -348,8 +348,8 @@ void Task_Message_Handling( float _time_since_last )
                      break;
                  }
 
-                 float dist_Left = data.Lin - data.Ang*(Car_Width*0.5); // calculate distance for left to travel
-                 float dist_Right = data.Lin + data.Ang*(Car_Width*0.5); // calculate distance for right to travel
+                 float dist_Left = data.Lin - data.Ang * ( Car_Width * 0.5 ); // calculate distance for left to travel
+                 float dist_Right = data.Lin + data.Ang * ( Car_Width * 0.5 ); // calculate distance for right to travel
                  Controller_Set_Target_Position( &Left_Controller, dist_Left ); // set targets based on calculation
                  Controller_Set_Target_Position( &Right_Controller, dist_Right );
 
@@ -371,8 +371,8 @@ void Task_Message_Handling( float _time_since_last )
                  } data;
                  USB_Msg_Read_Into( &data, sizeof( data ) );  // fills the struct with the received floats
                  if( Battery_Check( 0.0 ) ) { // if the battery is good
-                     float vel_Left = data.Lin - data.Ang*(Car_Width*0.5);
-                     float vel_Right = data.Lin + data.Ang*(Car_Width*0.5);
+                     float vel_Left = data.Lin - data.Ang * ( Car_Width * 0.5 );
+                     float vel_Right = data.Lin + data.Ang * ( Car_Width * 0.5 );
                      Controller_Set_Target_Velocity(&Left_Controller, vel_Left );
                      Controller_Set_Target_Velocity(&Right_Controller, vel_Right );
                      Task_Activate( &task_send_command, Left_Controller.update_period * 1000 ); // update the controller and run the motors every 10 ms
@@ -398,8 +398,8 @@ void Task_Message_Handling( float _time_since_last )
                      break;
                  }
 
-                 float vel_Left = ( (2000*data.Lin) - (1000*data.Ang)*(Car_Width*0.5) );
-                 float vel_Right = ( (2000*data.Lin) + (1000*data.Ang)*(Car_Width*0.5) );
+                 float vel_Left = ( ( 2000 * data.Lin ) - ( 1000 * data.Ang ) * ( Car_Width * 0.5 ) );
+                 float vel_Right = ( ( 2000 * data.Lin ) + ( 1000 * data.Ang ) * ( Car_Width * 0.5 ) );
                  Controller_Set_Target_Velocity(&Left_Controller, vel_Left );
                  Controller_Set_Target_Velocity(&Right_Controller, vel_Right );
 

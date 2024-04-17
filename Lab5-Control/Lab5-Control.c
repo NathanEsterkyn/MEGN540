@@ -87,8 +87,8 @@ void Initialize_Modules(float unused)
     float numR[] = {3.917527, -3.777463};
     float kpL = 2.0;
     float kpR = 2.0;
-    Initialize_Controller( &Left_Controller,kpL,numL,denL,1,0.010 );
-    Initialize_Controller( &Right_Controller,kpR,numR,denR,1,0.010 );
+    Initialize_Controller( &Left_Controller,kpL,numL,denL,1,0.005 );
+    Initialize_Controller( &Right_Controller,kpR,numR,denR,1,0.005 );
     Initialize_Task( &task_send_command, Send_Command );
     Initialize_Task( &task_clear_command, Clear_Command );
     Initialize_Task( &task_cancel_command, Cancel_Command );
