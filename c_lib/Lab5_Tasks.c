@@ -47,7 +47,7 @@ void Cancel_Command(float unused) {
     //Initialize_Encoders(); // resets the encoders
     Task_Cancel( &task_send_command ); // cancel the task
     Task_Activate( &task_clear_command, -1);
-    Controller_Set_Target_Position( &Left_Controller, 0.0 );
-    Controller_Set_Target_Position( &Right_Controller, 0.0 );
+    //Controller_Set_Target_Position( &Left_Controller, 0.0 );
+    //Controller_Set_Target_Position( &Right_Controller, 0.0 );
     Task_Cancel( &task_cancel_command ); // cancels itself
 }
