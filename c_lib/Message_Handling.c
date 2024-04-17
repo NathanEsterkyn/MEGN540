@@ -352,17 +352,13 @@ void Task_Message_Handling( float _time_since_last )
                  float dist_Right = data.Lin + data.Ang*(Car_Width*0.5); // calculate distance for right to travel
                  Controller_Set_Target_Position( &Left_Controller, dist_Left ); // set targets based on calculation
                  Controller_Set_Target_Position( &Right_Controller, dist_Right );
-                 Time_t timeStart = Timing_Get_Time(); // get the current time
 
                  if( Battery_Check( 0.0 ) ) { // if the battery is of an acceptable voltage
                      Task_Activate( &task_send_command, Left_Controller.update_period * 1000 ); // runs the motors
-                     if( Timing_Seconds_Since(&timeStart) >= ( data.Time * 0.001 ) ) {
-                        Task_Cancel( &task_send_command );
-                        Task_Activate( &task_clear_command, -1); // clears all the control data and stops the motors
-                        command_processed = true; // reset the watchdog timer and activates task_message_handling_watchdog
-                        break;
-                     }
+                     Task_Activate( &task_cancel_command, data.Time );
                  }
+                 Task_Activate( &task_clear_command, -1); // clears all the control data and stops the motors
+                 command_processed = true; // reset the watchdog timer and activates task_message_handling_watchdog
             }
             break;
         case 'v':
@@ -412,7 +408,6 @@ void Task_Message_Handling( float _time_since_last )
                      Task_Activate( &task_cancel_command, data.Time ); // cancel the task after the specified time
                  }
                  Task_Activate( &task_clear_command, -1); // clears all the control data and stops the motors
-                 //Task_Cancel( &task_cancel_command );
                  command_processed = true; // reset the watchdog timer and activates task_message_handling_watchdog
             }
             break;
