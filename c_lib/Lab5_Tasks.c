@@ -13,7 +13,7 @@ void Send_Command(float unused) {
     MotorPWM_Set_Right( Saturate(new_right,MAX_PWM) );
 
     // FOR TESTING PURPOSES:
-
+    /*
     struct __attribute__( ( __packed__ ) ) {
         float distance;
         float PWM;
@@ -30,7 +30,7 @@ void Send_Command(float unused) {
 
     USB_Send_Msg("c2f", 'L',  &data_L, sizeof( data_L ) );
     USB_Send_Msg("c2f", 'R',  &data_R, sizeof( data_R ) );
-
+    */
     MotorPWM_Enable( true ); // enable motors
 }
 
