@@ -321,14 +321,14 @@ void Task_Message_Handling( float _time_since_last )
                  USB_Msg_Read_Into( &data, sizeof( data ) );  // fills the struct with the received floats
 
                  if( Battery_Check( 0.0 ) ) { // if the battery is good
-                     float dist_Left = data.Lin - data.Ang*(Car_Width*0.5); // calculate distance for left to travel
-                     float dist_Right = data.Lin + data.Ang*(Car_Width*0.5); // calculate distance for right to travel
+                     MotorPWM_Enable( true ); // enable motors
+                     float dist_Left = data.Lin - data.Ang * ( Car_Width * 0.5 ); // calculate distance for left to travel
+                     float dist_Right = data.Lin + data.Ang * ( Car_Width * 0.5 ); // calculate distance for right to travel
                      Controller_Set_Target_Position( &Left_Controller, dist_Left ); // set targets based on calculation
                      Controller_Set_Target_Position( &Right_Controller, dist_Right );
-
                      Task_Activate( &task_send_command, Left_Controller.update_period * 1000 ); // update the controller and run the motors every 10 ms
                  }
-                 Task_Activate( &task_clear_command, -1); // clears all the control data and stops the motors
+                 Task_Activate( &task_clear_command, -1 ); // clears all the control data and stops the motors
                  command_processed = true; // reset the watchdog timer and activates task_message_handling_watchdog
             }
             break;
@@ -349,15 +349,15 @@ void Task_Message_Handling( float _time_since_last )
                      break;
                  }
 
-                 float dist_Left = data.Lin - data.Ang*(Car_Width*0.5); // calculate distance for left to travel
-                 float dist_Right = data.Lin + data.Ang*(Car_Width*0.5); // calculate distance for right to travel
+                 float dist_Left = data.Lin - data.Ang * ( Car_Width * 0.5 ); // calculate distance for left to travel
+                 float dist_Right = data.Lin + data.Ang * ( Car_Width * 0.5 ); // calculate distance for right to travel
                  Controller_Set_Target_Position( &Left_Controller, dist_Left ); // set targets based on calculation
                  Controller_Set_Target_Position( &Right_Controller, dist_Right );
 
                  if( Battery_Check( 0.0 ) ) { // if the battery is of an acceptable voltage
-                     USB_Send_Msg("cfff", 'D', &data, sizeof(data)); // send USB message
+                     MotorPWM_Enable( true ); // enable motors
                      Task_Activate( &task_send_command, Left_Controller.update_period * 1000 ); // runs the motors
-                     Task_Activate( &task_clear_command, data.Time ); // cancel the task after the specified time
+                     Task_Activate( &task_cancel_command, data.Time );
                  }
                  Task_Activate( &task_clear_command, -1); // clears all the control data and stops the motors
                  command_processed = true; // reset the watchdog timer and activates task_message_handling_watchdog
@@ -373,11 +373,12 @@ void Task_Message_Handling( float _time_since_last )
                  } data;
                  USB_Msg_Read_Into( &data, sizeof( data ) );  // fills the struct with the received floats
                  if( Battery_Check( 0.0 ) ) { // if the battery is good
-                     float vel_Left = data.Lin - data.Ang*(Car_Width*0.5);
-                     float vel_Right = data.Lin + data.Ang*(Car_Width*0.5);
+                     MotorPWM_Enable( true ); // enable motors
+                     float vel_Left = data.Lin - data.Ang * ( Car_Width * 0.5 );
+                     float vel_Right = data.Lin + data.Ang * ( Car_Width * 0.5 );
                      Controller_Set_Target_Velocity(&Left_Controller, vel_Left );
                      Controller_Set_Target_Velocity(&Right_Controller, vel_Right );
-                     Task_Activate( &task_send_command, 10); // update the controller and run the motors every 10 ms
+                     Task_Activate( &task_send_command, Left_Controller.update_period * 1000 ); // update the controller and run the motors every 10 ms
                  }
                  Task_Activate( &task_clear_command, -1); // clears all the control data and stops the motors
                  command_processed = true;                           // reset the watchdog timer and activates task_message_handling_watchdog
@@ -395,20 +396,20 @@ void Task_Message_Handling( float _time_since_last )
                  USB_Msg_Read_Into( &data, sizeof( data ) );  // fills the struct with the received floats
 
                  if( data.Time <= 0 ) {  // if the float received is <= 0, cancel the task
-                     //Task_Cancel( &task_send_system_data );
+                     Task_Cancel( &task_send_command );
                      command_processed = true;  // reset the watchdog timer and activates task_message_handling_watchdog
                      break;
                  }
 
-                 float vel_Left = data.Lin - data.Ang*(Car_Width*0.5);
-                 float vel_Right = data.Lin + data.Ang*(Car_Width*0.5);
+                 float vel_Left = ( ( 100 * data.Lin ) - ( 100 * data.Ang ) * ( Car_Width * 0.5 ) );
+                 float vel_Right = ( ( 100 * data.Lin ) + ( 100 * data.Ang ) * ( Car_Width * 0.5 ) );
                  Controller_Set_Target_Velocity(&Left_Controller, vel_Left );
                  Controller_Set_Target_Velocity(&Right_Controller, vel_Right );
 
                  if( Battery_Check( 0.0 ) ) { // if the battery is of an acceptable voltage
-                     USB_Send_Msg("cfff", 'V', &data, sizeof(data)); // send USB message
+                     MotorPWM_Enable( true ); // enable motors
                      Task_Activate( &task_send_command, Left_Controller.update_period * 1000 ); // runs the motors
-                     Task_Activate( &task_clear_command, data.Time ); // cancel the task after the specified time
+                     Task_Activate( &task_cancel_command, data.Time * 1000 ); // cancel the task after the specified time
                  }
                  Task_Activate( &task_clear_command, -1); // clears all the control data and stops the motors
                  command_processed = true; // reset the watchdog timer and activates task_message_handling_watchdog

@@ -78,19 +78,20 @@ void Initialize_Modules(float unused)
     Initialize_Task( &task_send_battery_warning, Send_Battery_Warning );
 
     // Set up PWM functionality
-    Initialize_Task(&task_send_system_data, Send_System_Data);
+    Initialize_Task( &task_send_system_data, Send_System_Data );
 
     // Set up controllers
-    float denL[] = {1, -0.870776};
-    float numL[] = {2.057436, -1.928212};
-    float denR[] = {1, -0.859936};
-    float numR[] = {3.917527, -3.777463};
-    float kpL = 2.0;
-    float kpR = 2.0;
-    Initialize_Controller( &Left_Controller,kpL,numL,denL,1,0.010 );
-    Initialize_Controller( &Right_Controller,kpR,numR,denR,1,0.010 );
+    float numL[] = {5.058328, -4.803122};
+    float denL[] = {1, -0.744795};
+    float numR[] = {5.101777, -4.846229};
+    float denR[] = {1, -0.744452};
+    float kpL = 58.5;
+    float kpR = 57.0;
+    Initialize_Controller( &Left_Controller,kpL,numL,denL,1,0.005 );
+    Initialize_Controller( &Right_Controller,kpR,numR,denR,1,0.005 );
     Initialize_Task( &task_send_command, Send_Command );
     Initialize_Task( &task_clear_command, Clear_Command );
+    Initialize_Task( &task_cancel_command, Cancel_Command );
 
     // Set up task message handling watchdog
     Initialize_Task( &task_message_handling_watchdog, Task_Message_Handling_Watchdog );
@@ -109,29 +110,30 @@ int main()
     for(;;) {  // another way to do while(true)
         Task_USB_Upkeep();
 
-        Task_Run_If_Ready(&task_message_handling); // run message handling if ready
-        Task_Run_If_Ready(&task_restart); // restart if ready
+        Task_Run_If_Ready( &task_message_handling ); // run message handling if ready
+        Task_Run_If_Ready( &task_restart ); // restart if ready
 
         // Timing Functionality
-        Task_Run_If_Ready(&task_send_time);
-        Task_Run_If_Ready(&task_time_loop);
+        Task_Run_If_Ready( &task_send_time );
+        Task_Run_If_Ready( &task_time_loop );
 
         // Encoder and Voltage Functionality
-        Task_Run_If_Ready(&task_send_encoder_value);
-        Task_Run_If_Ready(&task_check_battery_voltage);
-        Task_Run_If_Ready(&task_send_battery_voltage);
+        Task_Run_If_Ready( &task_send_encoder_value );
+        Task_Run_If_Ready( &task_check_battery_voltage );
+        Task_Run_If_Ready( &task_send_battery_voltage );
 
         // PWM Functionality
-        Task_Run_If_Ready(&task_send_system_data);
+        Task_Run_If_Ready( &task_send_system_data );
 
         // Control Functionality
         Task_Run_If_Ready( &task_send_command );
         Task_Run_If_Ready( &task_clear_command );
+        Task_Run_If_Ready( &task_cancel_command );
 
         if (!task_message_handling_watchdog.is_active){ // if the message handling watchdog isn't active (message timeout functionality)
-            Task_Activate(&task_message_handling_watchdog,250); // activate message handling watchdog to run every 0.25 seconds (250 ms)
+            Task_Activate( &task_message_handling_watchdog, 250 ); // activate message handling watchdog to run every 0.25 seconds (250 ms)
         }
-        Task_Run_If_Ready(&task_message_handling_watchdog); // run watchdog if ready
+        Task_Run_If_Ready( &task_message_handling_watchdog ); // run watchdog if ready
     }
     return 0;
 }

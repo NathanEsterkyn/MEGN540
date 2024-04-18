@@ -52,6 +52,7 @@
 // e.g. Task_t task_restart;  ///<-- Lab 1: This flag indicates that the device received a restart command from the host. Default inactive.
 Task_t task_send_command;
 Task_t task_clear_command;
+Task_t task_cancel_command;
 Controller_t Left_Controller;
 Controller_t Right_Controller;
 
@@ -59,11 +60,12 @@ Controller_t Right_Controller;
 // message handling and the Lab main loops.
 // e.g. void Send_Time_Now( float _time_since_last );
 static const float Car_Width = 0.086; // central distance between treads in meters
-static const float Car_Wheel_Diameter = 0.039; // central distance between treads in meters
+static const float Car_Wheel_Diameter = 0.050; // central distance between treads in meters
 static const float Dead_Band_adj = 50.0;
 static const float MAX_PWM = 1000;
 static const float pi = 3.14159;
 void Send_Command(float unused);
 void Clear_Command(float unused);
+void Cancel_Command(float unused);
 
 #endif  // ifndef LAB5_TASKS_H
